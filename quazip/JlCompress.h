@@ -42,11 +42,13 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
   */
 class QUAZIP_EXPORT JlCompress {
 public:
-    static bool copyData(QIODevice &inFile, QIODevice &outFile);
-    static QStringList extractDir(QuaZip &zip, const QString &dir);
+    typedef std::function<bool(qreal)> QuazipProgressCallback;//if return true means cancel.
+
+    static bool copyData(QIODevice &inFile, QIODevice &outFile, const QuazipProgressCallback& callback = {});
+    static QStringList extractDir(QuaZip &zip, const QString &dir, const QuazipProgressCallback& callback = {});
     static QStringList getFileList(QuaZip *zip);
-    static QString extractFile(QuaZip &zip, QString fileName, QString fileDest);
-    static QStringList extractFiles(QuaZip &zip, const QStringList &files, const QString &dir);
+    static QString extractFile(QuaZip &zip, QString fileName, QString fileDest, const QuazipProgressCallback& callback = {});
+    static QStringList extractFiles(QuaZip &zip, const QStringList &files, const QString &dir, const QuazipProgressCallback& callback = {});
     /// Compress a single file.
     /**
       \param zip Opened zip to compress the file to.
@@ -54,7 +56,7 @@ public:
       \param fileDest The full name of the file inside the archive.
       \return true if success, false otherwise.
       */
-    static bool compressFile(QuaZip* zip, QString fileName, QString fileDest);
+    static bool compressFile(QuaZip* zip, QString fileName, QString fileDest, const QuazipProgressCallback& callback = {});
     /// Compress a subdirectory.
     /**
       \param parentZip Opened zip containing the parent directory.
@@ -66,7 +68,7 @@ public:
       \return true if success, false otherwise.
       */
     static bool compressSubDir(QuaZip* parentZip, QString dir, QString parentDir, bool recursive,
-                               QDir::Filters filters);
+                               QDir::Filters filters, const QuazipProgressCallback& callback = {});
     /// Extract a single file.
     /**
       \param zip The opened zip archive to extract from.
@@ -74,7 +76,7 @@ public:
       \param fileDest The full path to the destination file.
       \return true if success, false otherwise.
       */
-    static bool extractFile(QuaZip* zip, QString fileName, QString fileDest);
+    static bool extractFile(QuaZip* zip, QString fileName, QString fileDest, const QuazipProgressCallback& callback = {});
     /// Remove some files.
     /**
       \param listFile The list of files to remove.
@@ -88,14 +90,14 @@ public:
       \param file The file to compress.
       \return true if success, false otherwise.
       */
-    static bool compressFile(QString fileCompressed, QString file);
+    static bool compressFile(QString fileCompressed, QString file, const QuazipProgressCallback& callback = {});
     /// Compress a list of files.
     /**
       \param fileCompressed The name of the archive.
       \param files The file list to compress.
       \return true if success, false otherwise.
       */
-    static bool compressFiles(QString fileCompressed, QStringList files);
+    static bool compressFiles(QString fileCompressed, QStringList files, const QuazipProgressCallback& callback = {});
     /// Compress a whole directory.
     /**
       Does not compress hidden files. See compressDir(QString, QString, bool, QDir::Filters).
@@ -106,7 +108,7 @@ public:
       just regular files.
       \return true if success, false otherwise.
       */
-    static bool compressDir(QString fileCompressed, QString dir = QString(), bool recursive = true);
+    static bool compressDir(QString fileCompressed, QString dir = QString(), bool recursive = true, const QuazipProgressCallback& callback = {});
     /**
      * @brief Compress a whole directory.
      *
@@ -124,7 +126,7 @@ public:
      * @return true on success, false otherwise
      */
     static bool compressDir(QString fileCompressed, QString dir,
-                            bool recursive, QDir::Filters filters);
+                            bool recursive, QDir::Filters filters, const QuazipProgressCallback& callback = {});
 
     /// Extract a single file.
     /**
@@ -134,7 +136,7 @@ public:
       \a file if left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QString extractFile(QString fileCompressed, QString fileName, QString fileDest = QString());
+    static QString extractFile(QString fileCompressed, QString fileName, QString fileDest = QString(), const QuazipProgressCallback& callback = {});
     /// Extract a list of files.
     /**
       \param fileCompressed The name of the archive.
@@ -143,7 +145,7 @@ public:
       directory if left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractFiles(QString fileCompressed, QStringList files, QString dir = QString());
+    static QStringList extractFiles(QString fileCompressed, QStringList files, QString dir = QString(), const QuazipProgressCallback& callback = {});
     /// Extract a whole archive.
     /**
       \param fileCompressed The name of the archive.
@@ -151,7 +153,7 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QString fileCompressed, QString dir = QString());
+    static QStringList extractDir(QString fileCompressed, QString dir = QString(), const QuazipProgressCallback& callback = {});
     /// Extract a whole archive.
     /**
       \param fileCompressed The name of the archive.
@@ -160,7 +162,7 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QString fileCompressed, QTextCodec* fileNameCodec, QString dir = QString());
+    static QStringList extractDir(QString fileCompressed, QTextCodec* fileNameCodec, QString dir = QString(), const QuazipProgressCallback& callback = {});
     /// Get the file list.
     /**
       \return The list of the files in the archive, or, more precisely, the
@@ -176,7 +178,7 @@ public:
       \a file if left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QString extractFile(QIODevice *ioDevice, QString fileName, QString fileDest = QString());
+    static QString extractFile(QIODevice *ioDevice, QString fileName, QString fileDest = QString(), const QuazipProgressCallback& callback = {});
     /// Extract a list of files.
     /**
       \param ioDevice pointer to device with compressed data.
@@ -185,7 +187,7 @@ public:
       directory if left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractFiles(QIODevice *ioDevice, QStringList files, QString dir = QString());
+    static QStringList extractFiles(QIODevice *ioDevice, QStringList files, QString dir = QString(), const QuazipProgressCallback& callback = {});
     /// Extract a whole archive.
     /**
       \param ioDevice pointer to device with compressed data.
@@ -193,7 +195,7 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QIODevice *ioDevice, QString dir = QString());
+    static QStringList extractDir(QIODevice *ioDevice, QString dir = QString(), const QuazipProgressCallback& callback = {});
     /// Extract a whole archive.
     /**
       \param ioDevice pointer to device with compressed data.
@@ -202,7 +204,7 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QIODevice* ioDevice, QTextCodec* fileNameCodec, QString dir = QString());
+    static QStringList extractDir(QIODevice* ioDevice, QTextCodec* fileNameCodec, QString dir = QString(), const QuazipProgressCallback& callback = {});
     /// Get the file list.
     /**
       \return The list of the files in the archive, or, more precisely, the
