@@ -139,6 +139,7 @@ bool JlCompress::compressSubDir(QuaZip* zip, QString dir, QString origDir, bool 
                 if (callback && callback((progress + count) / total)) {
                     return true;
                 }
+                return false;
             })) {
                 return false;
             } else {
@@ -268,7 +269,7 @@ bool JlCompress::compressFile(QString fileCompressed, QString file, const Quazip
     }
 
     // Aggiungo il file
-    if (!compressFile(&zip,file,QFileInfo(file).fileName()), callback) {
+    if (!compressFile(&zip,file,QFileInfo(file).fileName(), callback)) {
         QFile::remove(fileCompressed);
         return false;
     }
