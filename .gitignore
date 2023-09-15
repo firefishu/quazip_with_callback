@@ -4,3 +4,6 @@
 *.tags
 *.user
 *.swp
+.idea*
+cmake-build*
+*.DS_Store
