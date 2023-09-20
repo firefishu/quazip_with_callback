@@ -154,6 +154,8 @@ public:
       \return The list of the full paths of the files extracted, empty on failure.
       */
     static QStringList extractDir(QString fileCompressed, QString dir = QString(), const QuazipProgressCallback& callback = {});
+    /// return true on success, false otherwise
+    static bool extractDir2(QString fileCompressed, QString dir = QString(), const QuazipProgressCallback& callback = {});
     /// Extract a whole archive.
     /**
       \param fileCompressed The name of the archive.

@@ -430,6 +430,10 @@ QStringList JlCompress::extractDir(QString fileCompressed, QString dir, const Qu
     return extractDir(fileCompressed, nullptr, dir, callback);
 }
 
+bool JlCompress::extractDir2(QString fileCompressed, QString dir, const QuazipProgressCallback& callback) {
+    return !extractDir(fileCompressed, nullptr, dir, callback).empty();
+}
+
 QStringList JlCompress::extractDir(QuaZip &zip, const QString &dir, const QuazipProgressCallback& callback)
 {
     if(!zip.open(QuaZip::mdUnzip)) {
