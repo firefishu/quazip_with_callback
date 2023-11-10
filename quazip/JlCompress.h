@@ -30,6 +30,7 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 #include "quazipfile.h"
 #include "quazipfileinfo.h"
 #include "quazip_qt_compat.h"
+#include <functional>
 #include <QtCore/QString>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>

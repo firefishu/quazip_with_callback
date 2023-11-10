@@ -329,6 +329,7 @@ bool JlCompress::compressDir(QString fileCompressed, QString dir,
 {
     // Creo lo zip
     QuaZip zip(fileCompressed);
+    zip.setFileNameCodec(QTextCodec::codecForName("UTF-8"));
     QDir().mkpath(QFileInfo(fileCompressed).absolutePath());
     if(!zip.open(QuaZip::mdCreate)) {
         QFile::remove(fileCompressed);
