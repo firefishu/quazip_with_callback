@@ -44,8 +44,11 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 class QUAZIP_EXPORT JlCompress {
 public:
     typedef std::function<bool(qreal)> QuazipProgressCallback;//if return true means cancel.
+    typedef std::function<bool(qint64)> QuazipSizeCallback;//if return true means cancel.
 
-    static bool copyData(QIODevice &inFile, QIODevice &outFile, const QuazipProgressCallback& callback = {});
+    static qint64 calculateFolderSize(const QString& dir, QDir::Filters filters = {});
+
+    static bool copyData(QIODevice &inFile, QIODevice &outFile, const QuazipSizeCallback& callback = {});
     static QStringList extractDir(QuaZip &zip, const QString &dir, const QuazipProgressCallback& callback = {});
     static QStringList getFileList(QuaZip *zip);
     static QString extractFile(QuaZip &zip, QString fileName, QString fileDest, const QuazipProgressCallback& callback = {});
@@ -57,7 +60,7 @@ public:
       \param fileDest The full name of the file inside the archive.
       \return true if success, false otherwise.
       */
-    static bool compressFile(QuaZip* zip, QString fileName, QString fileDest, const QuazipProgressCallback& callback = {});
+    static bool compressFile(QuaZip* zip, QString fileName, QString fileDest, const QuazipSizeCallback& callback = {});
     /// Compress a subdirectory.
     /**
       \param parentZip Opened zip containing the parent directory.
@@ -69,7 +72,7 @@ public:
       \return true if success, false otherwise.
       */
     static bool compressSubDir(QuaZip* parentZip, QString dir, QString parentDir, bool recursive,
-                               QDir::Filters filters, const QuazipProgressCallback& callback = {});
+                               QDir::Filters filters, const QuazipSizeCallback& callback = {});
     /// Extract a single file.
     /**
       \param zip The opened zip archive to extract from.
@@ -77,7 +80,7 @@ public:
       \param fileDest The full path to the destination file.
       \return true if success, false otherwise.
       */
-    static bool extractFile(QuaZip* zip, QString fileName, QString fileDest, const QuazipProgressCallback& callback = {});
+    static bool extractFile(QuaZip* zip, QString fileName, QString fileDest, const QuazipProgressCallback & callback = {});
     /// Remove some files.
     /**
       \param listFile The list of files to remove.
@@ -91,14 +94,14 @@ public:
       \param file The file to compress.
       \return true if success, false otherwise.
       */
-    static bool compressFile(QString fileCompressed, QString file, const QuazipProgressCallback& callback = {});
+    static bool compressFile(QString fileCompressed, QString file, const QuazipSizeCallback& callback = {});
     /// Compress a list of files.
     /**
       \param fileCompressed The name of the archive.
       \param files The file list to compress.
       \return true if success, false otherwise.
       */
-    static bool compressFiles(QString fileCompressed, QStringList files, const QuazipProgressCallback& callback = {});
+    static bool compressFiles(QString fileCompressed, QStringList files, const QuazipSizeCallback& callback = {});
     /// Compress a whole directory.
     /**
       Does not compress hidden files. See compressDir(QString, QString, bool, QDir::Filters).
@@ -109,7 +112,7 @@ public:
       just regular files.
       \return true if success, false otherwise.
       */
-    static bool compressDir(QString fileCompressed, QString dir = QString(), bool recursive = true, const QuazipProgressCallback& callback = {});
+    static bool compressDir(QString fileCompressed, QString dir = QString(), bool recursive = true, const QuazipSizeCallback& callback = {});
     /**
      * @brief Compress a whole directory.
      *
@@ -127,7 +130,7 @@ public:
      * @return true on success, false otherwise
      */
     static bool compressDir(QString fileCompressed, QString dir,
-                            bool recursive, QDir::Filters filters, const QuazipProgressCallback& callback = {});
+                            bool recursive, QDir::Filters filters, const QuazipSizeCallback& callback = {});
 
     /// Extract a single file.
     /**
